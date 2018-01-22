@@ -1,9 +1,11 @@
-var Letter = function(letter) {
-  this.letter = letter;
+var Letters = function(letters) {
+  this.letters = letters;
 }
 
-Letter.prototype.change = function() {
+Letters.prototype.change = function() {
 
 }
 
-module.exports = Letter;
+
+
+module.exports = Letters;
