@@ -22,15 +22,14 @@ var Word = function() {
   this.lettersGuessed = [];
 
   this.playGame = function() {
-    if (this.word.word !== that.splitBlanks.join("")) {
+    if (this.word.word !== that.splitBlanks.join("") && this.lives >= 1) {
       inquirer.prompt([
         {
           name: "userGuess",
           message: "Guess a letter!!!"
         }])
         .then(function(answer) {
-          // console.log(that.word.word);
-          // console.log(that.splitBlanks.join(""));
+          console.log(that.word.word);
           that.totalGuesses.push(answer.userGuess);
           for (i = 0; i < that.totalGuesses.length; i++)
             for (j = 0; j < that.splitBlanks.length; j++) {
@@ -44,40 +43,42 @@ var Word = function() {
           console.log(that.splitBlanks.join(" "));
           that.playGame();
         });
+    } else if (this.lives <= 0) {
+        this.endGame();
     } else {
-      console.log("You Won! ctrl + c to exit");
-      // inquirer.prompt([
-      //   {
-      //     type: "list",
-      //     name: "choice",
-      //     message: "\nYOU WIN!!!",
-      //     choices: [
-      //       'Play Again?',
-      //       'Main Menu\n'
-      //     ]
-      //   }
-      // ])
-      // .then(function(response) {
-      //   if (response.choice === 'Play Again?') {
-      //     // that.playGame();
-      //   } else if (response.choice === 'Main Menu\n') {
-      //     // that.mainMenu;
-      //   }
-      // })
+      inquirer.prompt([
+        {
+          type: "list",
+          name: "choice",
+          message: "\nYOU WIN!!!",
+          choices: [
+            'Play Again?',
+            'Main Menu\n'
+          ]
+        }
+      ])
+      .then(function(response) {
+        if (response.choice === 'Play Again?') {
+          that.newGame();
+          that.playGame();
+        } else if (response.choice === 'Main Menu\n') {
+          that.newGame();
+          that.mainMenu.mainMenu();
+        }
+      });
     }
   };
+
   this.wrongLtr = function() {
     console.log("INCORRECT!");
     that.lives --;
     that.lettersGuessed.push(that.totalGuesses[that.totalGuesses.length -1]);
     console.log("Guesses Remaining: " + that.lives);
     console.log("Wrong Letters Guessed: " + that.lettersGuessed);
-    that.endGame();
+    // that.endGame();
   };
 
   this.endGame = function() {
-    if (that.lives <= 0) {
-
       inquirer.prompt([
         {
           type: "list",
@@ -91,32 +92,25 @@ var Word = function() {
       ])
       .then(function(response) {
         if (response.choice === 'Play Again!') {
-          this.word = new LtrTrans(that.randomWord());
-          that.totalGuesses = [];
-          that.lettersGuessed = [];
-          that.lives = 9;
-          that.splitBlanks = this.word.makeBlank();
-          that.splitWord = this.word.split();
-          // that.newGame();
-          // that.playGame();
+          // that.word.word = '';
+          that.newGame();
+          that.playGame();
         } else if (response.choice === 'Main Menu\n') {
-          // that.mainMenu.mainMenu;
-          // console.log(that.mainMenu);
+          that.newGame();
+          that.mainMenu.mainMenu();
         }
       });
-    }
   };
 
   this.newGame = function() {
-    // that.word = new LtrTrans(that.randomWord);
     this.word = new LtrTrans(that.randomWord());
+    that.word = this.word;
     that.totalGuesses = [];
     that.lettersGuessed = [];
-    that.lives = 9;
-    that.splitBanks = '';
-    that.splitWord = '';
+    that.lives = 10;
+    that.splitBlanks = this.word.makeBlank();
+    that.splitWord = this.word.split();
     console.log(that.splitBlanks.join(" "));
-    mainMenu();
   };
 };
 
