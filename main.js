@@ -1,9 +1,6 @@
 var inquirer = require('inquirer');
 var Word = require('./word.js');
 
-
-
-
 var runProg = true;
 
 exports.mainMenu = function(wordLetters) {
@@ -58,5 +55,3 @@ exports.mainMenu = function(wordLetters) {
   }
 }
 exports.mainMenu();
-
-// module.exports = mainMenu;

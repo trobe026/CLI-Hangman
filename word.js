@@ -1,26 +1,32 @@
 var inquirer = require('inquirer');
 var LtrTrans = require('./letters.js');
-var mainMenu = require('./cli.js');
+var mainMenu = require('./main.js');
 
 
 var Word = function() {
   let that = this;
-  // getting instrument
+  // grabs an instrument for
   this.instruments = ["mandolin", "harpsichord", "electricbass", "bagpipes", "electricguitar", "xylophone", "ukulele", "tambourine", "theremin", "synthesizer", "clarinet", "saxophone", "flugelhorn", "glockenspiel", "recorder"];
   this.randomWord = function() {
     return this.instruments[Math.floor(Math.random() * this.instruments.length)];
   }
   this.word = new LtrTrans(this.randomWord());
+
   // turn letters in word into _
   this.splitBlanks = this.word.makeBlank();
+
   // split word
   this.splitWord = this.word.split();
 
+  // game variables
   this.lives = 9;
-  this.mainMenu = mainMenu;
   this.totalGuesses = [];
   this.lettersGuessed = [];
 
+  // ref to mainMenu function in cli.js
+  this.mainMenu = mainMenu;
+
+  // main game function
   this.playGame = function() {
     if (this.word.word !== that.splitBlanks.join("") && this.lives >= 1) {
       inquirer.prompt([
@@ -29,7 +35,6 @@ var Word = function() {
           message: "Guess a letter!!!"
         }])
         .then(function(answer) {
-          console.log(that.word.word);
           that.totalGuesses.push(answer.userGuess);
           for (i = 0; i < that.totalGuesses.length; i++)
             for (j = 0; j < that.splitBlanks.length; j++) {
@@ -69,15 +74,16 @@ var Word = function() {
     }
   };
 
+// handles wrong letters
   this.wrongLtr = function() {
     console.log("INCORRECT!");
     that.lives --;
     that.lettersGuessed.push(that.totalGuesses[that.totalGuesses.length -1]);
     console.log("Guesses Remaining: " + that.lives);
     console.log("Wrong Letters Guessed: " + that.lettersGuessed);
-    // that.endGame();
   };
 
+// when lives < 0:
   this.endGame = function() {
       inquirer.prompt([
         {
@@ -92,7 +98,6 @@ var Word = function() {
       ])
       .then(function(response) {
         if (response.choice === 'Play Again!') {
-          // that.word.word = '';
           that.newGame();
           that.playGame();
         } else if (response.choice === 'Main Menu\n') {
@@ -102,6 +107,7 @@ var Word = function() {
       });
   };
 
+// resets game variables
   this.newGame = function() {
     this.word = new LtrTrans(that.randomWord());
     that.word = this.word;
