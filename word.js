@@ -29,12 +29,29 @@ var Word = function() {
   // main game function
   this.playGame = function() {
     if (this.word.word !== that.splitBlanks.join("") && this.lives >= 1) {
+
+
       inquirer.prompt([
         {
           name: "userGuess",
-          message: "Guess a letter!!!"
-        }])
+          message: "Guess a letter!!!",
+          validate: function(str) {
+            var done = this.async();
+            var letters = /^[a-zA-Z]+$/;
+            // console.log(str);
+            setTimeout(function() {
+              if (!str.match(letters) || (str.length > 1)) {
+                console.log(" is not a valid entry");
+                done("Please enter a single letter!");
+                return;
+              }
+              done(null, true);
+            }, 0);
+          }
+        }
+        ])
         .then(function(answer) {
+          if (answer.userGuess )
           that.totalGuesses.push(answer.userGuess);
           for (i = 0; i < that.totalGuesses.length; i++)
             for (j = 0; j < that.splitBlanks.length; j++) {
@@ -48,6 +65,7 @@ var Word = function() {
           console.log(that.splitBlanks.join(" "));
           that.playGame();
         });
+
     } else if (this.lives <= 0) {
         this.endGame();
     } else {
