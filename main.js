@@ -28,7 +28,7 @@ exports.mainMenu = function(wordLetters) {
         console.log(that.wordLetters.splitBlanks.join(" "));
         that.wordLetters.playGame();
       } else if (response.choice === 'List Word Choices') {
-        console.log(that.wordLetters.instruments);
+        console.log(that.wordLetters.instruments.join('\n'));
         inquirer.prompt([
           {
             type: "list",
